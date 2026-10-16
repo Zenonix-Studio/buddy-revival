@@ -33,6 +33,15 @@ claude plugin install buddy-revival --marketplace Zenonix-Studio/buddy-revival
 Then type `/buddy` to hatch (or greet) your companion. No Bun, no jq, and it does not
 replace your status line.
 
+## Updating
+
+```
+claude plugin marketplace update buddy-revival
+claude plugin update buddy-revival@buddy-revival
+```
+
+Then `/reload-plugins` in an open session, or start a new one.
+
 ## What it does
 
 Your buddy sits in the band above the prompt. It blinks, sways, and occasionally says
