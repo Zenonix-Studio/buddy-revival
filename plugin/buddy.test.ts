@@ -219,3 +219,26 @@ test('/buddy sound lists the chirp settings', async ($) => {
   expect(text).toContain('turn: 30s')
   expect(text).toContain('waiting: on')
 })
+
+test('desktop band: a close control hides it, /buddy show brings it back', async ($, on) => {
+  on('ui.render', () => ({ type: 'Box', props: {}, children: [] }) as never) // the engine's own band beneath the plugin: nothing
+  await $.command.run({ command: 'buddy' })
+  const mount = () => $.ui.mount({ plugin: 'buddy-revival', surface: 'desktop', component: 'AbovePrompt', props: { hasSurvey: false, isWorking: false, maxRows: 10 } })
+  let m = await mount()
+  const name = (await m.find({ type: 'Button' }))?.props.label as string
+  expect(name).toMatch(/^Hide /)
+  await m.press({ key: name })
+  await m.unmount()
+  m = await mount()
+  expect(JSON.stringify(await m.drawn())).not.toContain('Lv')
+  await m.unmount()
+  const back = await $.command.run({ command: 'buddy', args: 'show' })
+  expect(String((back as { text?: string }).text)).toContain('back above the prompt')
+  m = await mount()
+  expect(JSON.stringify(await m.drawn())).toContain('Lv')
+  await m.unmount()
+  await $.command.run({ command: 'buddy', args: 'hide' })
+  m = await mount()
+  expect(JSON.stringify(await m.drawn())).not.toContain('Lv')
+  await m.unmount()
+})

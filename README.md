@@ -64,7 +64,7 @@ Nothing to maintain: it never dies, never sulks, and never nags you to feed it.
 | Command | |
 |---|---|
 | `/buddy` | hatch, or show its card (species, rarity, stats, level, belly, energy) |
-| `/buddy show` | open it in a pane of its own |
+| `/buddy hide` · `/buddy show` | hide the band; bring it back (or, with the band up, open it in a pane of its own) |
 | `/buddy pet` · `/buddy feed` | the tamagotchi part |
 | `/buddy ask [question]` | sends the last failing output to Haiku and relays one debugging hint |
 | `/buddy today` | today's recap: turns, tool calls, red tests turned green |
@@ -87,6 +87,8 @@ shows it.** Once hidden, Claude Code draws no button to bring it back, so:
   `/buddy key off` removes it.
 - While the band is hidden, the status line says `Crumpet is hiding · ctrl+b to show`.
 - In a fullscreen terminal, `/buddy show` docks to the right; Claude Code decides where panes go.
+- `/buddy hide` hides it anywhere, and in the desktop app the band has its own close button.
+  `/buddy show` brings it back.
 
 ## Settings
 

@@ -321,6 +321,7 @@ const bellyA = atom({ plugin: 'buddy-revival', key: 'belly' } as const, null)
 // module state, re-initialized each (re)load by session.start
 let bones: Bones | null = null
 let muted = false
+let bandHidden = false
 let lastReactAt = -1000
 let isCompanionFromClaudeJson = false
 let llmQuipsOn = false
@@ -599,7 +600,7 @@ async function drawBuddy($: Engine, e: Engine, comp: Companion, bones: Bones, st
   const belly = await read($, bellyA)
 
   const meter = ctxMeter(belly, ctxTokens, ctxWindow)
-  const { Box, Text } = $.ui.resolve(e)
+  const { Box, Text, Button } = $.ui.resolve(e)
   const bubble =
     rx && rx.untilTick > t ? (
       <Box flexDirection={stacked ? 'column' : 'row'} alignItems={stacked ? 'flex-start' : 'center'}>
@@ -609,6 +610,15 @@ async function drawBuddy($: Engine, e: Engine, comp: Companion, bones: Bones, st
         <Text dimColor>{stacked ? '  \u2572' : '\u2500 '}</Text>
       </Box>
     ) : null
+  // desktop is wide: keep the last thing it said as a dim thought, and give the band a close control
+  const roomy = !stacked && e.surface === 'desktop'
+  const thought = roomy && !bubble ? (rx?.text ?? chatterPool(belly)[0]) : null
+  const hide = roomy ? (
+    <Button role="dismiss" label={`Hide ${comp.name}`} plain dimColor onPress={async () => {
+      bandHidden = true
+      await storeSet($, 'bandHidden', true)
+    }} />
+  ) : null
   const effort = effortLine(effortLevel)
   const agents = agentsLine(agentsWorking)
   const meterLine = (
@@ -650,7 +660,9 @@ async function drawBuddy($: Engine, e: Engine, comp: Companion, bones: Bones, st
       {meterLine}
       <Box flexDirection="row" alignItems="center">
         {bubble}
+        {thought ? <Text dimColor italic>{`\u201c${thought}\u201d  `}</Text> : null}
         {sprite}
+        {hide}
       </Box>
     </Box>
   )
@@ -659,6 +671,7 @@ async function drawBuddy($: Engine, e: Engine, comp: Companion, bones: Bones, st
 export const register: Register = (on, options) => {
   bones = null
   muted = false
+  bandHidden = false
   lastReactAt = -1000
   isCompanionFromClaudeJson = false
   xp = 0
@@ -696,7 +709,7 @@ export const register: Register = (on, options) => {
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'buddy',
-      description: 'Your coding companion: /buddy [show|pet|feed|ask|today|sound|key|stats|rename <name>|off|on]',
+      description: 'Your coding companion: /buddy [show|hide|pet|feed|ask|today|sound|key|stats|rename <name>|off|on]',
     })
 
     // resolve companion: original home (~/.claude.json) wins, then our own store
@@ -719,6 +732,7 @@ export const register: Register = (on, options) => {
       if (stored) await update($, companionA, () => stored)
     }
     if (await storeGet($, 'muted')) muted = true
+    if (await storeGet($, 'bandHidden')) bandHidden = true
     xp = Number(await storeGet($, 'xp')) || 0
     lastCareAt = Number(await storeGet($, 'lastCareAt')) || 0
     const lastSeen = Number(await storeGet($, 'lastSeenAt')) || 0
@@ -802,9 +816,9 @@ export const register: Register = (on, options) => {
       }
       if (!compact && hasBand) {
         const comp = await read($, companionA)
-        const hidden = Boolean(!muted && !paneOpen && comp && bones && t - lastBandTick > 6)
+        const hidden = Boolean(!muted && !paneOpen && comp && bones && (bandHidden || t - lastBandTick > 6))
         if (hidden && comp && bones) {
-          $.ui.status(`${miniFace(bones)} ${comp.name} is hiding \u00b7 ${BAND_KEY} to show`)
+          $.ui.status(`${miniFace(bones)} ${comp.name} is hiding \u00b7 ${bandHidden ? '/buddy show' : BAND_KEY} to show`)
           hidingHint = true
         } else if (hidingHint) {
           $.ui.status(undefined)
@@ -1005,7 +1019,16 @@ export const register: Register = (on, options) => {
       case '':
       case 'stats':
         return { text: await revealCard($, comp, bones!) }
+      case 'hide':
+        bandHidden = true
+        await storeSet($, 'bandHidden', true)
+        return { text: `${comp.name} is hiding. /buddy show brings them back.` }
       case 'show': {
+        if (bandHidden) {
+          bandHidden = false
+          await storeSet($, 'bandHidden', false)
+          return { text: `${comp.name} is back above the prompt.` }
+        }
         let reason = 'no room'
         try {
           const opened = await $.ui.open({ id: PANE_ID, title: comp.name, closeOnEscape: true, rows: 7, columns: 30 })
@@ -1134,13 +1157,13 @@ export const register: Register = (on, options) => {
         await storeSet($, 'muted', false)
         return { text: `${comp.name} is back.` }
       default:
-        return { text: 'Usage: /buddy [show|pet|feed|ask [question]|today|sound|key [ctrl+b]|stats|rename <name>|off|on]' }
+        return { text: 'Usage: /buddy [show|hide|pet|feed|ask [question]|today|sound|key [ctrl+b]|stats|rename <name>|off|on]' }
     }
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     lastBandTick = (await read($, tickA)) ?? 0
-    if (muted || compact || paneOpen || e.props.hasSurvey || !bones) return next(e)
+    if (muted || compact || bandHidden || paneOpen || e.props.hasSurvey || !bones) return next(e)
     const comp = await read($, companionA)
     if (!comp) return next(e)
     return drawBuddy($, e, comp, bones)
