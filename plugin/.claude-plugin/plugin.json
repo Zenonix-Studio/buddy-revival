@@ -1,0 +1,60 @@
+{
+  "name": "buddy-revival",
+  "version": "0.1.0",
+  "description": "Bring back Claude Code's Buddy: your original companion, re-derived from your account, living above your prompt",
+  "author": {
+    "name": "Anil Kul"
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "compact": {
+      "type": "boolean",
+      "title": "Compact mode",
+      "default": false,
+      "description": "Show the buddy as a one-line status entry instead of the animated band"
+    },
+    "llmQuips": {
+      "type": "boolean",
+      "title": "LLM reactions",
+      "default": false,
+      "description": "Generate buddy reactions with a small model call (costs tokens); off = canned lines"
+    },
+    "sounds": {
+      "type": "boolean",
+      "title": "Sounds",
+      "default": true,
+      "description": "Master switch for the chirp (macOS; silent elsewhere)"
+    },
+    "chirpAfterTurn": {
+      "type": "string",
+      "title": "Chirp when a turn finishes",
+      "options": [
+        "never",
+        "15s",
+        "30s",
+        "60s",
+        "120s"
+      ],
+      "default": "30s",
+      "description": "Chirp when a turn longer than this finishes"
+    },
+    "chirpOnPermission": {
+      "type": "boolean",
+      "title": "Chirp on permission asks",
+      "default": true,
+      "description": "Chirp when Claude needs your permission to continue"
+    },
+    "chirpWhenWaiting": {
+      "type": "boolean",
+      "title": "Chirp when Claude is waiting",
+      "default": true,
+      "description": "Chirp on Claude Code's 'waiting for your input' notice (sent while the window is in the background)"
+    },
+    "chirpOncePerWait": {
+      "type": "boolean",
+      "title": "Chirp once per wait",
+      "default": true,
+      "description": "After one chirp, stay quiet until you send the next prompt (permission asks excepted)"
+    }
+  }
+}

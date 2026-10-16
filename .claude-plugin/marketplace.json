@@ -1,0 +1,15 @@
+{
+  "name": "buddy-revival",
+  "owner": {
+    "name": "Anil Kul"
+  },
+  "metadata": {
+    "description": "buddy-revival: Claude Code's removed Buddy companion, restored"
+  },
+  "plugins": [
+    {
+      "name": "buddy-revival",
+      "source": "./plugin"
+    }
+  ]
+}
