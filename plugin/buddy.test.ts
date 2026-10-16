@@ -225,9 +225,8 @@ test('desktop band: a close control hides it, /buddy show brings it back', async
   await $.command.run({ command: 'buddy' })
   const mount = () => $.ui.mount({ plugin: 'buddy-revival', surface: 'desktop', component: 'AbovePrompt', props: { hasSurvey: false, isWorking: false, maxRows: 10 } })
   let m = await mount()
-  const name = (await m.find({ type: 'Button' }))?.props.label as string
-  expect(name).toMatch(/^Hide /)
-  await m.press({ key: name })
+  expect((await m.find({ type: 'Button' }))?.props.role).toBe('dismiss')
+  await m.press({ key: 'hide' })
   await m.unmount()
   m = await mount()
   expect(JSON.stringify(await m.drawn())).not.toContain('Lv')

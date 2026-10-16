@@ -614,10 +614,12 @@ async function drawBuddy($: Engine, e: Engine, comp: Companion, bones: Bones, st
   const roomy = !stacked && e.surface === 'desktop'
   const thought = roomy && !bubble ? (rx?.text ?? chatterPool(belly)[0]) : null
   const hide = roomy ? (
-    <Button role="dismiss" label={`Hide ${comp.name}`} plain dimColor onPress={async () => {
-      bandHidden = true
-      await storeSet($, 'bandHidden', true)
-    }} />
+    <Box alignSelf="flex-start" marginLeft={2}>
+      <Button key="hide" role="dismiss" label={'\u2715'} plain dimColor onPress={async () => {
+        bandHidden = true
+        await storeSet($, 'bandHidden', true)
+      }} />
+    </Box>
   ) : null
   const effort = effortLine(effortLevel)
   const agents = agentsLine(agentsWorking)
