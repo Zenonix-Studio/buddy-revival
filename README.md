@@ -9,11 +9,10 @@ derived from your account, not rolled at random, and this plugin re-derives it t
 Same species, rarity, eyes, hat and shiny status that Claude Code gave you.
 
 ```
-╭──────────────────────╮     ,_,
-│ the tests disagree   │ ─  (·,·)
-│ with you.            │     " "
-╰──────────────────────╯   Crumpet Lv5 ▰▰▱▱▱ (level progress)
- ████░░░░░░ ctx 42% 84k/200k
+                                            ╭──────────────────────╮    ,_,
+███████░░░ ctx 69% 690k/1M  │  Opus 5.5     │ the tests disagree   │─  (·,·)
+◐ medium · /effort                          │ with you.            │    " "
+2 agents working                            ╰──────────────────────╯  Crumpet Lv6 ▰▰▰▱▱
 ```
 
 ## Install
@@ -50,7 +49,7 @@ something dumb in a speech bubble. It also keeps an eye on things:
 | It notices | It says |
 |---|---|
 | A test fails, an error shows up, a diff passes 80 lines | a short reaction (at most one every 30s) |
-| The session | beside the sprite: context meter with model (`ctx 39% 387k/1M · Opus 5.5`), effort (`◐ medium · /effort`) and, while any run, `N agents working` |
+| The session | beside the sprite: context meter with model (`ctx 39% 387k/1M  │  Opus 5.5`), effort (`◐ medium · /effort`) and, while any run, `N agents working` |
 | The context window fills up | the meter (green → yellow at 60% → red at 85%, with tokens used / window); its belly fills with your tokens, at 85% it asks for `/compact`, after compaction it burps |
 | Your usage limit nears 80% / 95% | it gets tired and tells you |
 | A turn over 30 s finishes, Claude needs your permission, or Claude has been waiting on you (window in the background) | it chirps once per wait and taps the glass |
