@@ -20,16 +20,18 @@ Same species, rarity, eyes, hat and shiny status that Claude Code gave you.
 At the prompt of a Claude Code session:
 
 ```
-/plugin install buddy-revival --marketplace Zenonix-Studio/buddy-revival
+/plugin marketplace add Zenonix-Studio/buddy-revival
+/plugin install buddy-revival@buddy-revival
 ```
 
-Answer `y` to add the marketplace, then pick a scope. From a shell:
+From a shell:
 
 ```
-claude plugin install buddy-revival --marketplace Zenonix-Studio/buddy-revival
+claude plugin marketplace add Zenonix-Studio/buddy-revival
+claude plugin install buddy-revival@buddy-revival
 ```
 
-Then type `/buddy` to hatch (or greet) your companion. No Bun, no jq, and it does not
+Then `/reload-plugins` (or start a new session) and type `/buddy` to hatch (or greet) your companion. No Bun, no jq, and it does not
 replace your status line.
 
 ## Updating
